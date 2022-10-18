@@ -1,0 +1,255 @@
+<!DOCTYPE >
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paraguay Invaders</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
+	<link rel="icon" href="../img/nave.png">
+    </head>
+	<body>
+		<h1>PARAGUAY INVADERS</h1>
+		<h2 id="score"> </h2>
+		<div class="fundo" id="fundo">
+			<button type="button"  id="start"> COMEÇAR </button>
+			<div id="div1">
+				
+			</div>
+		</div>	
+		<div class="painel">
+				<br>
+				<div type="button" class="controle"  id="esquerda"></div>
+				<button type="button" class="controle" id="disparo"></button>
+				<div type="button" class="controle" id="direita"></div><br>
+		</div>
+		<script>
+				//Configurações dos botões
+				document.querySelector("#esquerda").addEventListener("mousedown",()=>{ move("esquerda")});
+				document.querySelector("#esquerda").addEventListener("mouseup",()=>{ para()});
+				document.querySelector("#esquerda").addEventListener("touchstart",()=>{ move("esquerda")});
+				document.querySelector("#esquerda").addEventListener("touchend",()=>{ para()});
+				document.querySelector("#disparo").addEventListener("click",()=>{ gerarDisparo()});
+				document.querySelector("#start").addEventListener("click",()=>{ comeca()});
+        	    document.querySelector("#direita").addEventListener("mousedown",()=>{ move("direita")});
+				document.querySelector("#direita").addEventListener("mouseup",()=>{para()});
+				document.querySelector("#direita").addEventListener("touchstart",()=>{ move("direita")});
+				document.querySelector("#direita").addEventListener("touchend",()=>{para()});
+			
+				//COnfiguração para as teclas
+				window.addEventListener("keydown", function(event) {
+ 					if (event.defaultPrevented) {
+    					return;
+  					}
+  					if (event.code === "ArrowLeft"){
+						move("esquerda");
+  					} else if (event.code === "ArrowRight"){
+						move("direita");
+  					}
+					else if (event.code === "Space"){
+						gerarDisparo();
+  					}
+					  else if (event.code === "Enter" && intermissao.loop == false){
+						comeca();
+  					}
+				}, true);
+				window.addEventListener("keyup", function(event) {
+ 					if (event.defaultPrevented) {
+    					return;
+  					}
+  					if (event.code === "ArrowLeft" || event.code === "ArrowRight"){
+						para();
+					}	
+				}, true);
+
+				//Declaração dos arquivos de áudio
+				let tiro = new Audio("../audio/tiro(att).mp3");
+				let intermissao = new Audio("../audio/Intermission.mp3");
+				let explosao = new Audio("../audio/explosao(att).mp3");
+				let explosao_f = new Audio("../audio/explosao(final).mp3");
+
+				//Ínicio
+				let partidas = 0;
+				let inimigocount = 0;
+				let disparocount = 0;
+				alert("Almirante, a base está sendo atacada por naves paraguaias!\nÀs armas!!");	
+				alert("Sua missão é destruir o máximo de inimigos possíveis antes que eles cheguem à base. Boa sorte!");
+
+				function comeca(){
+					div1.style.left = 0;
+					div1.style.right = 0;
+					mov = 0;
+					inimigocount = 0;
+					document.querySelector("#start").remove();
+					if(partidas>0){document.querySelector("#over").remove();};
+					explosao_f.pause();
+					intermissao.load();
+					intermissao.play();
+					intermissao.loop = true;
+					gerarInimigo();
+				};	
+					//Atualizar o Score
+					function Score(){
+						document.querySelector("#score").innerHTML = "Pontuação: " + (inimigocount).toString();
+					};
+			
+            		// Mover a nave  - através dos botões
+					function move(Direcao) {
+						if (Direcao == "direita" && mov == 0) {mov = setInterval("direita()",50);};
+
+						if (Direcao == "esquerda" && mov == 0) {mov = setInterval("esquerda()",50);};
+					};
+
+        			function direita() {
+						let div1Right= parseInt(getComputedStyle(div1).right);
+						let div1Left= parseInt(getComputedStyle(div1).left);
+						let fundoWidth= parseInt(getComputedStyle(fundo).width);
+						let fundoHeight= parseInt(getComputedStyle(fundo).height);
+						let div1Width= parseInt(getComputedStyle(div1).width);
+
+						if ( div1Left < fundoWidth/2 - fundoWidth/70){
+							if(fundoWidth >= fundoHeight){
+								div1.style.left = div1Left+fundoWidth/70;
+								div1.style.right = div1Right-fundoWidth/70;
+							}
+							else{
+								div1.style.left = div1Left+fundoWidth/30;
+								div1.style.right = div1Right-fundoWidth/30;
+							}					
+						}
+						else{para()};
+					};
+
+					function esquerda() {
+						let div1Left= parseInt(getComputedStyle(div1).left);
+						let div1Right= parseInt(getComputedStyle(div1).right);
+						let fundoWidth= parseInt(getComputedStyle(fundo).width);
+						let fundoHeight= parseInt(getComputedStyle(fundo).height);
+						let div1Width= parseInt(getComputedStyle(div1).width);
+
+						if ( div1Right < fundoWidth/2 - fundoWidth/70){
+							if(fundoWidth >= fundoHeight){
+								div1.style.right = div1Right+fundoWidth/70;
+								div1.style.left = div1Left-fundoWidth/70;
+							}
+							else{
+								div1.style.right = div1Right+fundoWidth/30;
+								div1.style.left = div1Left-fundoWidth/30;
+							}	
+						}
+						else{para()};
+					};
+
+					function para(){
+						clearInterval(mov)
+						mov = 0;
+					};
+
+					//Criação e controle dos inimigos e o Game Over
+					function moverInimigo(){
+						let iniTop= parseInt(getComputedStyle(inimigo).top);
+						let fundoHeight= parseInt(getComputedStyle(fundo).height);
+						let fundoWidth= parseInt(getComputedStyle(fundo).width);
+						let iniHeight= parseInt(getComputedStyle(inimigo).height);
+						if(iniTop <= fundoHeight - iniHeight + 5){
+							inimigo.style.top = iniTop +5;
+						}
+						else{
+							intermissao.loop = false;
+							intermissao.pause();
+							explosao_f.load();
+							explosao_f.play();
+							clearInterval(m);
+							inimigo.remove();
+							g_over = document.createElement("h1");
+							g_over.setAttribute("id", "over");
+							g_over.innerHTML = "GAME OVER!";
+							fundo.appendChild(g_over);
+							alert("O jogo acabou.\n\nVocê destruiu " + (inimigocount-1) + " naves inimigas, parabéns!");
+							restart = document.createElement("button");
+							restart.setAttribute("id", "start");
+							restart.innerHTML = "RECOMEÇAR";
+							fundo.appendChild(restart);
+							document.querySelector("#start").addEventListener("click",()=>{ comeca()});
+							partidas++;
+						};
+					};
+			
+					function gerarInimigo(){
+						inimigo = document.createElement("div");
+						fundo = document.querySelector("#fundo");
+						inimigo.setAttribute("class", "inimigo");
+						fundo.appendChild(inimigo);
+						let fundoWidth= parseInt(getComputedStyle(fundo).width);
+						let aleatorio = Math.floor(Math.random() * (fundoWidth - 19.5));
+						inimigo.style.left = aleatorio;
+						Score();
+						inimigocount++;
+						m = setInterval("moverInimigo()", 30-inimigocount);
+					};
+
+					//Geração e controle dos disparos
+					function moverDisparo(){
+						if (!document.querySelector(".disparo")) {
+							return;
+						} 
+						else {
+							let tiroBottom= parseInt(getComputedStyle(disparo).bottom);
+							let fundoHeight= parseInt(getComputedStyle(fundo).height);
+							let tiroHeight= parseInt(getComputedStyle(disparo).height);
+							if(tiroBottom <= fundoHeight - tiroHeight + 5){
+								disparo.style.bottom = tiroBottom +5;
+								colisao();
+							}
+							else{
+								clearInterval(n);
+								disparo.remove();
+								disparocount = 0;
+							};
+						};	
+					};
+
+					function gerarDisparo(){
+						if(disparocount!=0){
+							return;
+						}
+						else{
+							disparo = document.createElement("div");
+							fundo = document.querySelector("#fundo");
+							disparo.setAttribute("class", "disparo");
+							tiro.load();
+							tiro.play();
+							disparocount += 1;
+							disparo.setAttribute("id", "disparo"+disparocount);
+							fundo.appendChild(disparo);
+							let div1Left= parseInt(getComputedStyle(div1).left);
+							let fundoWidth= parseInt(getComputedStyle(fundo).width);
+							document.querySelector(("#disparo"+disparocount)).style.left = div1Left + fundoWidth/2;
+							disparo.style.bottom = 15;
+							n = setInterval("moverDisparo()", 0);
+						};
+					};
+
+					//Testes de Colisão e consequências
+					function colisao(){
+						let disparo = document.querySelector(".disparo");
+						let inimigo = document.querySelector(".inimigo");
+						if(parseInt(disparo.style.bottom)+parseInt(inimigo.style.top)>=parseInt(getComputedStyle(document.querySelector("#fundo")).height)-15 &&
+						parseInt(disparo.style.left)-30 <= parseInt(inimigo.style.left) && parseInt(disparo.style.left)+15 >= parseInt(inimigo.style.left)){
+							explosao.load();
+							explosao.play();
+							clearInterval(n);
+							disparo.remove();
+							disparocount = 0;
+							clearInterval(m);
+							inimigo.remove();
+							gerarInimigo();
+						};
+					};
+				//};
+			//};
+		</script>
+	</body>
+</html>
