@@ -1,10 +1,7 @@
 //constantes utilizadas
 const CACHE_NAME = 'my-site-cache-v1';
 const urlsToCache = [
-  './index.html',
-  './image/raio.png',
-  './image/pwa.png',
-  './',
+  './jogo.html',
   './manifest.json'
 ];
 
