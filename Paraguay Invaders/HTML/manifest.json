@@ -3,7 +3,7 @@
     "name": "Paraguay Invaders: o ataque ",
     "lang": "pt",
     "description": "Naves vindas de Rivera ameaçam a Terra!!",
-    "start_url": "index.html",
+    "start_url": "jogo.html",
     "background_color": "#000000",
     "theme_color": "#000000",
     "dir": "auto",
