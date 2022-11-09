@@ -30,45 +30,7 @@
       "type": "image/png",
       "sizes": "72x72"
     },
-    {{
-59
-      "src": "/apple-icon-60x60-seochecker-manifest-7409.png",
-60
-      "type": "image/png",
-61
-      "sizes": "60x60"
-62
-    },
-63
     {
-64
-      "src": "/apple-icon-57x57-seochecker-manifest-7409.png",
-65
-      "type": "image/png",
-66
-      "sizes": "57x57"
-67
-    },
-68
-    {
-69
-      "src": "/favicon-32x32-seochecker-manifest-7409.png",
-70
-      "type": "image/png",
-71
-      "sizes": "32x32"
-72
-    },
-73
-    {
-74
-      "src": "/favicon-16x16-seochecker-manifest-7409.png",
-75
-      "type": "image/png",
-76
-      "sizes": "16x16"
-77
-    }
       "src": "../img/icon_96px.png",
       "type": "image/png",
       "sizes": "96x96"
@@ -88,45 +50,7 @@
       "type": "image/png",
       "sizes": "180x180"
     },
-    {{
-59
-      "src": "/apple-icon-60x60-seochecker-manifest-7409.png",
-60
-      "type": "image/png",
-61
-      "sizes": "60x60"
-62
-    },
-63
     {
-64
-      "src": "/apple-icon-57x57-seochecker-manifest-7409.png",
-65
-      "type": "image/png",
-66
-      "sizes": "57x57"
-67
-    },
-68
-    {
-69
-      "src": "/favicon-32x32-seochecker-manifest-7409.png",
-70
-      "type": "image/png",
-71
-      "sizes": "32x32"
-72
-    },
-73
-    {
-74
-      "src": "/favicon-16x16-seochecker-manifest-7409.png",
-75
-      "type": "image/png",
-76
-      "sizes": "16x16"
-77
-    }
       "src": "../img/icon_192px.png",
       "type": "image/png",
       "sizes": "192x192"
