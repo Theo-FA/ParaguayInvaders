@@ -10,6 +10,13 @@
 	<link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
 	<link rel="icon" href="../img/nave.png">
 	<link rel="manifest" href="./manifest.json" />
+	<script>
+	if ('serviceWorker' in navigator) {
+        		navigator.serviceWorker.register('./sw.js');
+	       		.then(function () {console.log('service worker registered');})
+	       		.catch(function () {console.log('service worker failed'); });
+      		};
+	</script>
     </head>
 	<body>
 		<h1>PARAGUAY INVADERS</h1>
@@ -27,11 +34,6 @@
 				<div type="button" class="controle" id="direita"></div><br>
 		</div>
 		<script>
-				if ('serviceWorker' in navigator) {
-        				navigator.serviceWorker.register('./sw.js')
-	       				.then(function () {console.log('service worker registered');})
-	       				.catch(function () {console.log('service worker failed'); });
-      				};
 				//Configurações dos botões
 				document.querySelector("#esquerda").addEventListener("mousedown",()=>{ move("esquerda")});
 				document.querySelector("#esquerda").addEventListener("mouseup",()=>{ para()});
