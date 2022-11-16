@@ -4,19 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paraguay Invaders</title>
-    	<link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/style.css">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
 	<link rel="icon" href="../img/nave.png">
-	<link rel="manifest" href="./manifest.json" />
-	<script>
-	if ('serviceWorker' in navigator) {
-        		navigator.serviceWorker.register('./sw.js')
-	       		.then(function () {console.log('service worker registered');})
-	       		.catch(function () {console.log('service worker failed'); });
-      		};
-	</script>
     </head>
 	<body>
 		<h1>PARAGUAY INVADERS</h1>
@@ -41,7 +33,7 @@
 				document.querySelector("#esquerda").addEventListener("touchend",()=>{ para()});
 				document.querySelector("#disparo").addEventListener("click",()=>{ gerarDisparo()});
 				document.querySelector("#start").addEventListener("click",()=>{ comeca()});
-        	    		document.querySelector("#direita").addEventListener("mousedown",()=>{ move("direita")});
+        	    document.querySelector("#direita").addEventListener("mousedown",()=>{ move("direita")});
 				document.querySelector("#direita").addEventListener("mouseup",()=>{para()});
 				document.querySelector("#direita").addEventListener("touchstart",()=>{ move("direita")});
 				document.querySelector("#direita").addEventListener("touchend",()=>{para()});
@@ -82,8 +74,6 @@
 				let partidas = 0;
 				let inimigocount = 0;
 				let disparocount = 0;
-				alert("Almirante, a base está sendo atacada por naves paraguaias!\nÀs armas!!");	
-				alert("Sua missão é destruir o máximo de inimigos possíveis antes que eles cheguem à base. Boa sorte!");
 
 				function comeca(){
 					div1.style.left = 0;
@@ -92,12 +82,45 @@
 					inimigocount = 0;
 					document.querySelector("#start").remove();
 					if(partidas>0){document.querySelector("#over").remove();};
+					if(partidas>0){document.querySelector("#g_over").remove();};
 					explosao_f.pause();
 					intermissao.load();
 					intermissao.play();
 					intermissao.loop = true;
 					gerarInimigo();
-				};	
+				};
+				
+					//Armazenamento dos recordes
+					function Armazenar(){
+						if(!localStorage.getItem("record1")){
+							r1 = localStorage.setItem("record1", (inimigocount-1));
+						}else{
+							if(inimigocount-1 > localStorage.getItem("record1")){
+							r3 = localStorage.setItem("record2",localStorage.getItem("record2"));	
+							r2 = localStorage.setItem("record2",localStorage.getItem("record1"));	
+							r1 = localStorage.setItem("record1",(inimigocount-1));
+							return;
+							};
+						};
+						if(!localStorage.getItem("record2")){
+							r2 = localStorage.setItem("record2", (inimigocount-1));
+						}else{
+							if(inimigocount-1 > localStorage.getItem("record2")){
+							r3 = localStorage.setItem("record3",localStorage.getItem("record2"));	
+							r2 = localStorage.setItem("record2",(inimigocount-1));
+							return;
+							};
+						};
+						if(!localStorage.getItem("record3")){
+							r3 = localStorage.setItem("record3", (inimigocount-1));
+						}else{
+							if(inimigocount-1 > localStorage.getItem("record3")){
+							r3 = localStorage.setItem("record3",(inimigocount-1));
+							return;
+							};
+						};
+					};	
+
 					//Atualizar o Score
 					function Score(){
 						document.querySelector("#score").innerHTML = "Pontuação: " + (inimigocount).toString();
@@ -105,9 +128,9 @@
 			
             		// Mover a nave  - através dos botões
 					function move(Direcao) {
-						if (Direcao == "direita" && mov == 0) {mov = setInterval("direita()",50);};
+						if (Direcao == "direita" && mov == 0 && document.querySelector(".inimigo")) {mov = setInterval("direita()",50);};
 
-						if (Direcao == "esquerda" && mov == 0) {mov = setInterval("esquerda()",50);};
+						if (Direcao == "esquerda" && mov == 0 && document.querySelector(".inimigo")) {mov = setInterval("esquerda()",50);};
 					};
 
         			function direita() {
@@ -117,10 +140,10 @@
 						let fundoHeight= parseInt(getComputedStyle(fundo).height);
 						let div1Width= parseInt(getComputedStyle(div1).width);
 
-						if ( div1Left < fundoWidth/2 - fundoWidth/70){
+						if ( div1Left+div1Width < fundoWidth/2){
 							if(fundoWidth >= fundoHeight){
-								div1.style.left = div1Left+fundoWidth/70;
-								div1.style.right = div1Right-fundoWidth/70;
+								div1.style.left = div1Left+fundoWidth/50;
+								div1.style.right = div1Right-fundoWidth/50;
 							}
 							else{
 								div1.style.left = div1Left+fundoWidth/30;
@@ -137,10 +160,10 @@
 						let fundoHeight= parseInt(getComputedStyle(fundo).height);
 						let div1Width= parseInt(getComputedStyle(div1).width);
 
-						if ( div1Right < fundoWidth/2 - fundoWidth/70){
+						if ( div1Right+div1Width < fundoWidth/2){
 							if(fundoWidth >= fundoHeight){
-								div1.style.right = div1Right+fundoWidth/70;
-								div1.style.left = div1Left-fundoWidth/70;
+								div1.style.right = div1Right+fundoWidth/50;
+								div1.style.left = div1Left-fundoWidth/50;
 							}
 							else{
 								div1.style.right = div1Right+fundoWidth/30;
@@ -172,15 +195,19 @@
 							clearInterval(m);
 							inimigo.remove();
 							g_over = document.createElement("h1");
-							g_over.setAttribute("id", "over");
+							g_over.setAttribute("id", "g_over");
 							g_over.innerHTML = "GAME OVER!";
 							fundo.appendChild(g_over);
-							alert("O jogo acabou.\n\nVocê destruiu " + (inimigocount-1) + " naves inimigas, parabéns!");
+							over = document.createElement("h2");
+							over.setAttribute("id", "over");
+							over.innerHTML = "Pontuação: " + (inimigocount-1);
+							fundo.appendChild(over);
 							restart = document.createElement("button");
 							restart.setAttribute("id", "start");
 							restart.innerHTML = "RECOMEÇAR";
 							fundo.appendChild(restart);
 							document.querySelector("#start").addEventListener("click",()=>{ comeca()});
+							Armazenar();
 							partidas++;
 						};
 					};
@@ -200,7 +227,7 @@
 
 					//Geração e controle dos disparos
 					function moverDisparo(){
-						if (!document.querySelector(".disparo")) {
+						if (!document.querySelector(".disparo")){
 							return;
 						} 
 						else {
@@ -220,7 +247,7 @@
 					};
 
 					function gerarDisparo(){
-						if(disparocount!=0){
+						if(disparocount!=0 || !document.querySelector(".inimigo")){
 							return;
 						}
 						else{
@@ -256,8 +283,6 @@
 							gerarInimigo();
 						};
 					};
-				//};
-			//};
 		</script>
 	</body>
 </html>
